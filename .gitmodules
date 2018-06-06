@@ -1,0 +1,6 @@
+[submodule "openpose"]
+	path = openpose
+	url = https://github.com/n1ckfg/openpose
+[submodule "3d-pose-baseline"]
+	path = 3d-pose-baseline
+	url = https://github.com/n1ckfg/3d-pose-baseline
