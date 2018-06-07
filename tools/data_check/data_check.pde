@@ -14,10 +14,13 @@ void setup() {
   cam = new PeasyCam(this, 400);
 
   for (int i=0; i<origData.length; i+=3) {
-    PVector p = new PVector(origData[i], origData[i+1], origData[i+2]);
+    PVector p = new PVector(origData[i+0], origData[i+1], origData[i+2]);
     p.add(offset).mult(globalScale);
     points.add(p);
   }
+
+  println("origData length: " + origData.length + "   points length: " + points.size());
+
 }
 
 void draw() {
