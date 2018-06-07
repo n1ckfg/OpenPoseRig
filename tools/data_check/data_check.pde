@@ -30,14 +30,7 @@ void draw() {
   
   for (int i=0; i<points.size(); i++) {
     PVector p = points.get(i);
-    
-    if (i>0) {
-      PVector pp = points.get(i-1);
-      strokeWeight(5);
-      stroke(0);
-      line(pp.x, pp.y, pp.z, p.x, p.y, p.z);
-    }
-    
+  
     strokeWeight(1);
     stroke(0);
     fill(255);
@@ -47,4 +40,24 @@ void draw() {
     sphere(10);
     popMatrix();
   }
+  
+  PVector p_hip = points.get(0);
+  PVector p_neck = points.get(13);
+  PVector p_thorax = points.get(13);
+  PVector p_spine = points.get(24);
+
+  PVector[] body = { p_hip, p_thorax, p_spine, p_neck };
+  drawChain(body);
+}
+
+void drawChain(PVector[] p) {
+  for (int i=1; i<p.length; i++) {
+    drawLine(p[i-1], p[i]);
+  }
+}
+
+void drawLine(PVector pp, PVector p) {
+  strokeWeight(5);
+  stroke(0);
+  line(pp.x, pp.y, pp.z, p.x, p.y, p.z);
 }

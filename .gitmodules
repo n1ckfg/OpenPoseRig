@@ -4,3 +4,6 @@
 [submodule "3d-pose-baseline"]
 	path = 3d-pose-baseline
 	url = https://github.com/n1ckfg/3d-pose-baseline
+[submodule "OpenPoseUnity"]
+	path = OpenPoseUnity
+	url = https://github.com/n1ckfg/OpenPoseUnity
