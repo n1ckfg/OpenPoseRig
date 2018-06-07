@@ -1,3 +1,12 @@
+COUNTER=10
+until [  $COUNTER -lt 0 ]; do
+    echo ... $COUNTER ...
+    let COUNTER-=1
+    sleep 1
+done
+
+echo Launching OpenPose...
+
 cd openpose
 
 # basic
