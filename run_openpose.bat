@@ -5,6 +5,9 @@ cd openpose
 rem // basic
 rem bin\OpenPoseDemo.exe
 
+rem // read from video
+bin\OpenPoseDemo.exe --video examples\media\movie.mp4
+
 rem // recording
 bin\OpenPoseDemo.exe --write_json %~dp0\record\
 
