@@ -2,82 +2,45 @@ import peasy.PeasyCam;
 
 PeasyCam cam;
 
-float[] origData = { 6.89390000e+01, 0.00000000e+00, 1.07407105e+02, -5.04243315e+02, -1.08199263e+01, 1.76477921e+02, -7.32436376e+02, -8.15188640e+02, -5.43730003e+02, -9.98518435e+02, -3.98298507e+02, -9.43728179e+02,  5.73829367e+01, 1.66477287e+02, -6.34742621e+02, 5.70942898e+01,  1.65182437e+02, -6.29355959e+02, 6.42114399e+02, 1.08181013e+01,  3.83371231e+01, 9.59126910e+00, -2.11422961e+02, -5.55654807e+02, -6.53139382e+02, 3.65415574e+02, -7.89776939e+02, 5.76747600e+01,  1.66665977e+02, -6.41229759e+02, 5.75299160e+01, 1.63713810e+02, -6.29027959e+02, 6.89402166e+01, -1.93000576e-02, 1.07493116e+02,  1.07474392e+03, 6.20385744e+00, -5.91728611e+01, 1.98334386e+03, -1.98337678e+02, -4.85954497e+02, 2.02842139e+03, -6.00330048e+02, -5.46053724e+02, 2.24005612e+03, -5.37629686e+02, -4.89292646e+02,  7.46143780e+01, -9.76974016e+01, 5.42496010e+02, 2.58131773e+03, -3.56208948e+02, -6.61271268e+02, 2.96295210e+03, -1.67953383e+03, -1.18213628e+03, -3.96024496e+02, -1.66358559e+03, 1.35997638e+03,  7.02048582e+01, -2.82526049e+01, 2.27577684e+02, 7.05180070e+01, -3.52080548e+01, 2.59187354e+02, 6.98235440e+01, -2.56307189e+01,  2.15202461e+02, 6.98235440e+01, -2.56307189e+01, 2.15202461e+02,  7.46143780e+01, -9.76974016e+01, 5.42496010e+02, 1.11547895e+03,  1.36023609e+01, -2.16239150e+02, -8.77476746e+02, -1.52139013e+02,  5.23489187e+02, -6.21281643e+02, -9.32030040e+02, 1.18021564e+03,  6.98095690e+01, -3.73902498e+01, 2.76071674e+02, 7.03388251e+01, -4.47207875e+01, 3.08291357e+02, 6.94635911e+01, -3.68342864e+01,  2.73274878e+02, 6.94635911e+01, -3.68342864e+01, 2.73274878e+02 };
+int counter = 0;
 
-float[] x = { 10.80904786, -63.54239944, -36.27891382, -4.58065345, 90.66951908 , -44.06412275, 43.51830513, 29.142864, -3.79865987, -57.87016964, -16.07234772, 129.44080024, 161.99831335, 137.46396447, -95.72220738, -164.41061309, -134.62098474 };
+/*
+@ArashHosseini:
+DO NOT FORGET that the issue does not include real 3d data. 
+It is a projection and is very similar to "zbrush's" concept. 
+The axes contain another array with X, Y data. 
+You also need to know that the number of joints created is 32/2 = 16, which means 
+16 jnt * 4 (x (x, y), y (x, y)) = 64 + z (16 * 2 ( x, y)) = 96.
 
-float[] y = { 21.70503025, 136.65997355, 92.56971362, 150.32774044, -93.24992341, -129.96531652, -87.30345812, 24.48178567, -2.72574313, -51.63755009, -30.39325198, -107.99218494, -210.70172046, -230.67581898, 122.4013558, 240.54697805, 162.25057575 };
+@n1ckfg:
+Another way of thinking about the representation:
+Each coordinate is a screen projection of the original, so:
+16 joints, each with three coordinates * xy coords = 6 floats.
+*/
 
-float[] z = { -42.10170096, 22.46520252, -500.9052179, -928.99718751, -8.86253898, -503.33755929, -927.75761168, 190.34447139, 435.1363767, 496.69738389, 612.89893629, 411.01306468, 189.79858683, 93.75184849, 443.55978282, 261.90280319, 146.41580625 };
-
-float globalScale = 1;//0.1;
-PVector offset = new PVector(0,0,0);//210,-20,-522);
-
-ArrayList<PVector> points = new ArrayList<PVector>();
+ArrayList<FrameData> frames = new ArrayList<FrameData>();
 
 void setup() {
   size(640, 480, P3D);
   cam = new PeasyCam(this, 400);
 
-  /*
-  for (int i=0; i<origData.length; i+=3) {
-    PVector p = new PVector(origData[i+0], origData[i+1], origData[i+2]);
-    p.add(offset).mult(globalScale);
-    points.add(p);
-  }
-  */
+  String[] rawData = loadStrings("test.txt");
   
-  for (int i=0; i<x.length; i++) {
-    PVector p = new PVector(x[i], y[i], z[i]);
-    points.add(p);
+  for (int i=0; i<rawData.length; i+= 24) {
+    ArrayList<String> inputData = new ArrayList<String>();
+    for (int j=0; j<24; j++) {
+      inputData.add(rawData[i+j]);
+    }
+    frames.add(new FrameData(inputData));
   }
-
-  println("raw data frame: " + origData.length/3 + "   unity version: " + x.length + "   final points length: " + points.size());
-
 }
 
 void draw() {
   background(127, 63, 155);
   
   lights();
-  
-  for (int i=0; i<points.size(); i++) {
-    PVector p = points.get(i);
-  
-    if (i>0) {
-      PVector pp = points.get(i-1);
-      drawLine(pp, p);
-    }
     
-    strokeWeight(1);
-    stroke(0);
-    fill(255);
-    pushMatrix();
-    translate(p.x, p.y, p.z);
-    sphereDetail(2);
-    sphere(10);
-    popMatrix();
-  }
-  
-  /*
-  PVector p_hip = points.get(0);
-  PVector p_neck = points.get(13);
-  PVector p_thorax = points.get(13);
-  PVector p_spine = points.get(24);
-
-  PVector[] body = { p_hip, p_thorax, p_spine, p_neck };
-  drawChain(body);
-  */
-}
-
-void drawChain(PVector[] p) {
-  for (int i=1; i<p.length; i++) {
-    drawLine(p[i-1], p[i]);
-  }
-}
-
-void drawLine(PVector pp, PVector p) {
-  strokeWeight(5);
-  stroke(0);
-  line(pp.x, pp.y, pp.z, p.x, p.y, p.z);
+  frames.get(counter).draw();
+  counter++;
+  if (counter > frames.size()-1) counter = 0;
 }
