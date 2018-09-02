@@ -22,7 +22,7 @@ ArrayList<FrameData> frames = new ArrayList<FrameData>();
 
 void setup() {
   size(640, 480, P3D);
-  cam = new PeasyCam(this, 400);
+  //cam = new PeasyCam(this, 400);
 
   String[] rawData = loadStrings("test.txt");
   
@@ -40,7 +40,7 @@ void draw() {
   
   lights();
     
-  frames.get(counter).draw();
+  frames.get(counter).draw2d();
   counter++;
   if (counter > frames.size()-1) counter = 0;
 }

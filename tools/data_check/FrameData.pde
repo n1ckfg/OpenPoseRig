@@ -1,6 +1,6 @@
 class FrameData {
   
-  float globalScale = 1000;
+  float globalScale = 5;
   
   ArrayList<String> rawFrameData;
   ArrayList<PVector> points_2d;
@@ -15,16 +15,43 @@ class FrameData {
       String s = rawFrameData.get(i);
       s = s.replace("[", "").replace("]","");
       String[] rawCoords = s.split(" ");
-      points_2d.add(new PVector(float(rawCoords[0]), float(rawCoords[1])));
-      points_2d.add(new PVector(float(rawCoords[2]), float(rawCoords[3])));
+      ArrayList<String> readyCoords = new ArrayList<String>();
+      for (int j=0; j<rawCoords.length; j++) {
+        if (rawCoords[j].length() > 2) {
+          readyCoords.add(rawCoords[j]);
+        }
+      }
+      points_2d.add(convertRawCoords(readyCoords.get(0), readyCoords.get(1)));
+      points_2d.add(convertRawCoords(readyCoords.get(2), readyCoords.get(3)));
     }
     
     for (int i=0; i<points_2d.size(); i+=3) {
       points_3d.add(new Coord(points_2d.get(i), points_2d.get(i+1), points_2d.get(i+2)));
     }
   }
+  
+  PVector convertRawCoords(String x, String y) {
+    return new PVector(convertRawCoord(x), convertRawCoord(y));
+  }
+   
+  float convertRawCoord(String s) {
+    String s2[] = s.split("e");
+    String f2 = s2[1].replace("e+", "");
+    float f = float(s2[0]) * float(f2);
+    return f;
+  }
  
-  void draw() {
+  void draw2d() {
+    for (int i=1; i<points_2d.size(); i++) {
+      PVector p = points_2d.get(i).mult(globalScale);
+      PVector pp = points_2d.get(i-1).mult(globalScale);
+      strokeWeight(5);
+      stroke(0);
+      line(p.x, p.y, pp.x, pp.y);
+    }
+  }
+  
+  void draw3d() {
     for (int i=0; i<points_3d.size(); i++) {
       PVector p = points_3d.get(i).p;
     
@@ -45,9 +72,6 @@ class FrameData {
   }
   
   void drawLine(PVector pp, PVector p) {
-    pp = pp.mult(globalScale);
-    p = p.mult(globalScale);
-    
     strokeWeight(5);
     stroke(0);
     line(pp.x, pp.y, pp.z, p.x, p.y, p.z);
