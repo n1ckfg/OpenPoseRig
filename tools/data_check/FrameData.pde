@@ -1,14 +1,14 @@
 class FrameData {
   
-  float globalScale = 5;
-  
   ArrayList<String> rawFrameData;
   ArrayList<PVector> points_2d;
+  ArrayList<PVector> points_2d_sorted;
   ArrayList<Coord> points_3d;
   
   FrameData(ArrayList<String> inputData) {
     rawFrameData = inputData;
     points_2d = new ArrayList<PVector>();
+    points_2d_sorted = new ArrayList<PVector>();
     points_3d = new ArrayList<Coord>();
     
     for (int i=0; i<rawFrameData.size(); i++) {
@@ -25,10 +25,18 @@ class FrameData {
       points_2d.add(convertRawCoords(readyCoords.get(2), readyCoords.get(3)));
     }
     
+    for (int i=0; i<int(points_2d.size()/3)*2; i++) {
+      points_2d_sorted.add(points_2d.get(i));
+    }
+    
+    for (int i = int(points_2d.size()/3)*2; i<points_2d.size(); i++) {
+      points_2d_sorted.add(points_2d.get(i));
+    }
+    
     for (int i=0; i<points_2d.size(); i+=3) {
       points_3d.add(new Coord(points_2d.get(i), points_2d.get(i+1), points_2d.get(i+2)));
     }
-  }
+}
   
   PVector convertRawCoords(String x, String y) {
     return new PVector(convertRawCoord(x), convertRawCoord(y));
@@ -42,50 +50,19 @@ class FrameData {
   }
  
   void draw2d() {
-    for (int i=1; i<points_2d.size(); i++) {
-      PVector p = points_2d.get(i).mult(globalScale);
-      PVector pp = points_2d.get(i-1).mult(globalScale);
-      strokeWeight(5);
-      stroke(0);
-      line(p.x, p.y, pp.x, pp.y);
+    for (int i=1; i<points_3d.size(); i++) {
+      points_3d.get(i).draw2d();
     }
   }
   
   void draw3d() {
-    for (int i=0; i<points_3d.size(); i++) {
-      PVector p = points_3d.get(i).p;
-    
-      if (i>0) {
-        PVector pp = points_3d.get(i-1).p;
-        drawLine(pp, p);
-      }
-      
-      strokeWeight(1);
-      stroke(0);
-      fill(255);
-      pushMatrix();
-      translate(p.x, p.y, p.z);
-      sphereDetail(2);
-      sphere(10);
-      popMatrix();
-    }
+    //
   }
-  
-  void drawLine(PVector pp, PVector p) {
-    strokeWeight(5);
-    stroke(0);
-    line(pp.x, pp.y, pp.z, p.x, p.y, p.z);
-  }
-
-  void drawChain(ArrayList<PVector> p) {
-    for (int i=1; i<p.size(); i++) {
-      drawLine(p.get(i-1), p.get(i));
-    }
-  }
-  
 }
 
 class Coord {
+  
+  float globalScale = 5;
   
   PVector px;
   PVector py;
@@ -94,11 +71,43 @@ class Coord {
   PVector p;
   
   Coord(PVector _px, PVector _py, PVector _pz) {
-    px = _px;
-    py = _py;
-    pz = _pz;
-    
-    p = new PVector(random(width), random(height), random(1000));
+    px = _px.mult(globalScale);
+    py = _py.mult(globalScale);
+    pz = _pz.mult(globalScale);
+    // TODO p
+  }
+  void draw2d() {
+      strokeWeight(1);
+      stroke(0);
+      fill(255);
+      
+      beginShape();
+      vertex(px.x, px.y);
+      vertex(py.x, py.y);
+      vertex(pz.x, pz.y);
+      endShape();
+      
+      pushMatrix();
+      translate(px.x, px.y);
+      sphereDetail(2);
+      sphere(10);
+      popMatrix();
+
+      pushMatrix();
+      translate(py.x, py.y);
+      sphereDetail(2);
+      sphere(10);
+      popMatrix();
+
+      pushMatrix();
+      translate(pz.x, pz.y);
+      sphereDetail(2);
+      sphere(10);
+      popMatrix();
+  }
+  
+  void draw3d() {
+    //
   }
    
 }

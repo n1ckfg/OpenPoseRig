@@ -21,8 +21,8 @@ Each coordinate is a screen projection of the original, so:
 ArrayList<FrameData> frames = new ArrayList<FrameData>();
 
 void setup() {
-  size(640, 480, P3D);
-  //cam = new PeasyCam(this, 400);
+  size(1024, 768, P3D);
+  cam = new PeasyCam(this, 400);
 
   String[] rawData = loadStrings("test.txt");
   
