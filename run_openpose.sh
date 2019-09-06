@@ -13,8 +13,8 @@ cd $DIR
 cd openpose
 
 PS3='Please enter your choice: '
-options=("Demo" "Record" "Hands/Face" "Record High Precision" "3D")
-select opt in "${options[@]}"
+options=("Demo" "Hands/Face" "Record" "Record HP" "Video" "Video HP" "3D")
+select opt in "${options[@]}" 
 do
     case $opt in
         "Demo")
@@ -22,19 +22,29 @@ do
             ./build/examples/openpose/openpose.bin
             break
             ;;
-        "Record")
-            echo "Record"
-            ./build/examples/openpose/openpose.bin --write_json record/
-            break
-            ;;
         "Hands/Face")
             echo "Hands/Face" # ~50% fps vs. body only
             ./build/examples/openpose/openpose.bin --hand --face
             break
             ;;
-        "Record High Precision")
+        "Record")
+            echo "Record"
+            ./build/examples/openpose/openpose.bin --write_json record/
+            break
+            ;;
+        "Record HP")
             echo "Record High Precision" # requires > 8GB VRAM
             ./build/examples/openpose/openpose.bin --net_resolution "1312x736" --scale_number 4 --scale_gap 0.25 --write_json record/
+            break
+            ;;
+        "Video")
+            echo "Video" # requires > 8GB VRAM
+            ./build/examples/openpose/openpose.bin --video $1 --write_json record/
+            break
+            ;;
+        "Video HP")
+            echo "Video High Precision" # requires > 8GB VRAM
+            ./build/examples/openpose/openpose.bin --video $1 --net_resolution "1312x736" --scale_number 4 --scale_gap 0.25 --write_json record/
             break
             ;;
         "3D")
