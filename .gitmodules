@@ -7,3 +7,6 @@
 [submodule "OpenPoseUnity"]
 	path = OpenPoseUnity
 	url = https://github.com/n1ckfg/OpenPoseUnity
+[submodule "SecondHandPlayer"]
+	path = SecondHandPlayer
+	url = https://github.com/n1ckfg/SecondHandPlayer
